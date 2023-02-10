@@ -26,20 +26,34 @@ public class UserCollection {
 
   private List<User> users = new ArrayList<User>();
 
-  @GetMapping("/getUserById/{id}")
-  public User getUser(@PathVariable(value = "id") int id) {
-    User newUser = new User();
-    newUser.setId(id);
-    newUser.setFirstName("John");
-    newUser.setLastName("Doe");
+  @GetMapping("/getUsers")
+  public List<User> getUser() {
+    return users;
+  }
 
-    return newUser;
+  @GetMapping("/getUserById/{id}")
+  public List<User> getUser(@PathVariable(value = "id") int id) {
+    // List<User> userList = new ArrayList<User>();
+    return users.stream().filter(userObj -> (userObj.getId() == id)).collect(Collectors.toList());
+    // return userList;
   }
 
   @GetMapping("/getUserByName")
   public User getUser(@RequestParam(value = "firstName") String firstName,
       @RequestParam(value = "lastName") String lastName) {
     return userService.getUserByName(firstName, lastName);
+  }
+
+  @GetMapping("/removeUserByName")
+  public List<User> removeUser(@RequestParam(value= "firstName") String firstName) {
+
+      List<User> remList  = 
+      users.stream().filter(newObj ->
+      (newObj.getFirstName().equals(firstName)))
+      .collect(Collectors.toList());
+      users.removeAll(remList);
+
+      return users;
   }
 
   @GetMapping("/getSentUsers")
@@ -49,21 +63,29 @@ public class UserCollection {
     // if(u.getFirstName() == firstName) {
     // return users;
     // }
+    //  List<User> tempList = new ArrayList<User>();
+    // for (int i = 0; i < users.size(); i++) {
+    //   if (users.get(i).getFirstName().equals(firstName)) {
+    //     tempList.add(users.get(i));
+    //   }
+    // }
+    // return tempList;
 
-    List<User> tempList = new ArrayList<User>();
-    for (int i = 0; i < users.size(); i++) {
-      if (users.get(i).getFirstName().equals(firstName)) {
-        tempList.add(users.get(i));
-      }
-    }
+    return users.stream().filter(userObj ->
+    (userObj.getFirstName().equals(firstName)))
+    .collect(Collectors.toList());
+  
+  }
 
-    return tempList;
-
-    // return users.stream().filter(userObj ->
-    // (userObj.getFirstName().equals(firstName)))
-    // .collect(Collectors.toList());
-
-    // return users;
+  @GetMapping("/sortUsers")
+  public List<User> sortUser() {
+   List<User> sortedList = new ArrayList<User>();
+   int i;
+   for(i = 0; i<users.size(); i++) {
+    sortedList.add(users.get(i));
+   }
+   List<User> sList = sortedList.sort((o1,o2) -> o1.getId().compareTo(o2.getId()));
+   return sList;
   }
 
   @PostMapping("/saveUser")

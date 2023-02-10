@@ -8,7 +8,7 @@ import com.example.demo.models.User;
 public class UserService {
   public User getUserByName(String firstName, String lastName) {
     User a = new User();
-    a.setId(13);
+    a.setId(0);
     a.setFirstName(firstName);
     a.setLastName(lastName);
     return a;
